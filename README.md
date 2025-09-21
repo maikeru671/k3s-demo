@@ -92,7 +92,7 @@ curl -sfL https://get.k3s.iso | sh -
 ```
 <br><br>
 
-Verify it's running with **sudo kubectl get nodes**:
+Verify it's running with **kubectl get nodes**:
 
 <img width="1094" height="82" alt="image" src="https://github.com/user-attachments/assets/22a24848-fad7-4388-939f-9391e05e4036" />
 
@@ -116,7 +116,7 @@ kubectl get svc #check output
 <br>
 <img width="1198" height="54" alt="image" src="https://github.com/user-attachments/assets/3fa994a5-f232-4a88-9668-be3447f69758" />
 <br><br>
-5. Check NGINX web page shows via the public dns name, over port 30080:
+5. Check NGINX web page shows via the public dns name of my ec2 instance over port 30080:
 <img width="1248" height="293" alt="image" src="https://github.com/user-attachments/assets/568597b5-1b1d-4e69-9e4e-aed61b614a8a" />
 <br><br><br><br>
 
@@ -132,12 +132,12 @@ kubectl get svc #check output
 <img width="1401" height="55" alt="image" src="https://github.com/user-attachments/assets/def1e3fb-3fea-43e4-8602-dd76c864e70a" />
 
 <br><br>
-Get pods after inserting an invalid image to see status:
+Get pods after using an invalid image for the deployment to see status:
 <img width="1201" height="106" alt="image" src="https://github.com/user-attachments/assets/8f3914ee-dc7e-45f5-a8d4-9065eab235c6" />
 
 
 <br><br>
-2. Describe and get logs for problem pod to see what is causing the issue:
+2. Debug using "descibe" and "logs" commands:
 
   ```bash
   kubectl describe pod <pod-name>
@@ -146,10 +146,10 @@ Get pods after inserting an invalid image to see status:
 <img width="1996" height="58" alt="image" src="https://github.com/user-attachments/assets/44616269-4027-425e-a4f9-0a7e49db3d81" />
 
 <br><br>
-*Note, even though an invalid image got inserted, the website is still up:
+*Note, even though an invalid image got inserted, the website is still up. A new ReplicaSet was spun up using an invalid image while the old pod remained running:
 <img width="1313" height="323" alt="image" src="https://github.com/user-attachments/assets/ab20a93d-f6f9-4c09-9d34-551fb4952168" />
 <br><br>
-3. Fix issue. Use a valid image.
+3. Fix issue by using a valid image:
 
 ```bash
 kubectl set image deployment/<name-of-my-deployment> nginx=nginx:1.25
