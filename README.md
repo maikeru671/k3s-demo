@@ -17,7 +17,7 @@ This project is a tiny k3s cluster running on an EC2 instance in AWS. The app wi
 ## Section 1: **Create an ec2 instance and configure SSH access over SSM**
 1. Create a t3.small instance in the preferred region. Ensure it has an SSH key attached(or create a new one) and has a public IP.
 
-2. Ensure the instance is accessible via SSH. The instance can be accessed over SSH via PuTTY with a private key, but I decided to take a different route to help increase security. Instead of exposing port 22 over the internet in the security group, I opted to SSH to the instance over SSM. Steps I took are below:
+2. Ensure the instance is accessible via SSH. The instance can be accessed over SSH by allowing port 22 inbound to the security group, but I decided to take a different route to help increase security. Instead of exposing port 22 over the internet in the security group, I opted to SSH to the instance over SSM. Steps I took are below:
     1. Removed port 22 from the inbound rules of the security group that the instance lives in.h
     2. Created IAM role for the EC2 instance and attached the "AmazonSSMManagedInstanceCore" permission to it so that it can be managed by SSM.
     3. Verify that the instance is being managed by SSM by checking that it shows up in Fleet Manager:
@@ -52,11 +52,11 @@ This project is a tiny k3s cluster running on an EC2 instance in AWS. The app wi
       7. Went into the \.ssh\config file on my Windows machine and added the below entry:
 
          ```Host (custom name for my ssh session)
-             HostName (Instance ID) 
+             HostName <Instance-ID> 
              User ubuntu
-             IdentityFile C:\Path to my pem file\filename.pem
+             IdentityFile C:\<Path-to-my-pem-file>\<filename>.pem
              IdentitiesOnly yes
-             ProxyCommand C:\Windows\System32\cmd.exe /c aws ssm start-session --target %h --region (aws region) --profile (aws sso profile name) --document-name AWS-StartSSHSession --parameters "portNumber=%p"
+             ProxyCommand C:\Windows\System32\cmd.exe /c aws ssm start-session --target %h --region <aws-region> --profile <aws-sso-profile-name> --document-name AWS-StartSSHSession --parameters "portNumber=%p"
          ```
     
       
