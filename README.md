@@ -1,12 +1,12 @@
 # Kubernetes (k3s) on AWS EC2 - NGINX demo
 
-This project is a tiny k3s cluster running on an EC2 instance in AWS. The app used is NGINX and will display a default web page which will be exposed to the internet over a port. A broken rollout will be simulated and fixed.
-
+This project is a tiny k3s cluster running on an EC2 instance in AWS. The app will display the default web page for NGINX which will be exposed to the internet over a port. A broken rollout will be simulated and fixed.
 
 **Tools I used for the project**:
 - Free tier AWS account
 - One t3.small EC2 instance (appears to be the best free-tier instance for this project)
 - Kubernetes (k3s)
+- NGINX
 - PowerShell with awscli v2 installed.
 - VS Code (remotely SSH into the instance and make folders and files easier to see and work with)
 - Git and Github account
@@ -17,7 +17,7 @@ This project is a tiny k3s cluster running on an EC2 instance in AWS. The app us
 ## Section 1: **Create an ec2 instance and configure SSH access over SSM**
 1. Create a t3.small instance in the preferred region. Ensure it has an SSH key attached(or create a new one) and has a public IP.
 
-2. Ensure the instance is accessible via SSH. The instance can just be accessed over SSH via PuTTY with a private key, but I decided to take a different route here to help increase security. Instead of exposing port 22 over the internet in the security group, I opted to SSH to the instance over SSM. Steps I took are below:
+2. Ensure the instance is accessible via SSH. The instance can be accessed over SSH via PuTTY with a private key, but I decided to take a different route to help increase security. Instead of exposing port 22 over the internet in the security group, I opted to SSH to the instance over SSM. Steps I took are below:
     1. Removed port 22 from the inbound rules of the security group that the instance lives in.h
     2. Created IAM role for the EC2 instance and attached the "AmazonSSMManagedInstanceCore" permission to it so that it can be managed by SSM.
     3. Verify that the instance is being managed by SSM by checking that it shows up in Fleet Manager:
@@ -46,7 +46,7 @@ This project is a tiny k3s cluster running on an EC2 instance in AWS. The app us
         **Do a quick check if I can see the ec2 instance I created via aws cli**:
         <img width="1635" height="61" alt="image" src="https://github.com/user-attachments/assets/ac2446d5-a58a-4f87-948b-5390841e98de" />
 
-        <br>
+        <br><br>
 
 
       7. Went into the \.ssh\config file on my Windows machine and added the below entry:
@@ -94,7 +94,8 @@ curl -sfL https://get.k3s.iso | sh -
 
 Verify it's running with **kubectl get nodes**:
 
-<img width="1094" height="82" alt="image" src="https://github.com/user-attachments/assets/22a24848-fad7-4388-939f-9391e05e4036" />
+<img width="1011" height="74" alt="image" src="https://github.com/user-attachments/assets/be52e582-e131-456c-9104-191e24f0f254" />
+
 
 
 <br><br><br>
@@ -126,7 +127,7 @@ kubectl get svc #check output
 1. Point the deployment to an invalid container image
 
    ```bash
-   kubectl set image deployment/hello-nginx nginx=nginx:doesnotexist
+   kubectl set image deployment/<name-of-deployment> nginx=nginx:doesnotexist
    ```
 <br>
 <img width="1401" height="55" alt="image" src="https://github.com/user-attachments/assets/def1e3fb-3fea-43e4-8602-dd76c864e70a" />
@@ -137,7 +138,7 @@ Get pods after using an invalid image for the deployment to see status:
 
 
 <br><br>
-2. Debug using "descibe" and "logs" commands:
+2. Debug using "describe" and "logs" commands:
 
   ```bash
   kubectl describe pod <pod-name>
@@ -146,7 +147,7 @@ Get pods after using an invalid image for the deployment to see status:
 <img width="1996" height="58" alt="image" src="https://github.com/user-attachments/assets/44616269-4027-425e-a4f9-0a7e49db3d81" />
 
 <br><br>
-*Note, even though an invalid image got inserted, the website is still up. A new ReplicaSet was spun up using an invalid image while the old pod remained running:
+*Note, even though an invalid image got inserted, the website is still up. A new ReplicaSet was spun up using an invalid image while the old pod remained running to ensure availability:
 <img width="1313" height="323" alt="image" src="https://github.com/user-attachments/assets/ab20a93d-f6f9-4c09-9d34-551fb4952168" />
 <br><br>
 3. Fix issue by using a valid image:
@@ -167,7 +168,8 @@ kubectl rollout status deployment/<name-of-my-deployment>
 ```bash
 kubectl delete -f service.yaml -f deployment.yaml
 ```
-<img width="1146" height="74" alt="image" src="https://github.com/user-attachments/assets/2c11ece6-5384-4a03-9bb1-b14f3278e56b" />
+<img width="1144" height="78" alt="image" src="https://github.com/user-attachments/assets/de49b365-01f6-46c7-99bc-149e07c333f5" />
+
 <br><br>
 <img width="1251" height="199" alt="image" src="https://github.com/user-attachments/assets/7905ee09-e3af-47ba-9a1f-a391f897ad5d" />
 
