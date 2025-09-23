@@ -51,7 +51,8 @@ This project is a tiny k3s cluster running on an EC2 instance in AWS. The app wi
 
       7. Went into the \.ssh\config file on my Windows machine and added the below entry:
 
-         ```Host (custom name for my ssh session)
+         ```
+         Host (custom name for my ssh session)
              HostName <Instance-ID> 
              User ubuntu
              IdentityFile C:\<Path-to-my-pem-file>\<filename>.pem
