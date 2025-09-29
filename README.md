@@ -18,7 +18,7 @@ This project is a tiny k3s cluster running on an EC2 instance in AWS. The app wi
 1. Create a t3.small instance in the preferred region. Ensure it has an SSH key attached(or create a new one) and has a public IP.
 
 2. Ensure the instance is accessible via SSH. The instance can be accessed over SSH by allowing port 22 inbound to the security group, but I decided to take a different route to help increase security. Instead of exposing port 22 over the internet in the security group, I opted to SSH to the instance over SSM. Steps I took are below:
-    1. Removed port 22 from the inbound rules of the security group that the instance lives in.h
+    1. Removed port 22 from the inbound rules of the security group that the instance lives in.
     2. Created IAM role for the EC2 instance and attached the "AmazonSSMManagedInstanceCore" permission to it so that it can be managed by SSM.
     3. Verify that the instance is being managed by SSM by checking that it shows up in Fleet Manager:
     <img width="2401" height="524" alt="image" src="https://github.com/user-attachments/assets/10546bd3-751b-44dc-a871-8a17fed411c2" />
